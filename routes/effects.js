@@ -3,47 +3,36 @@ var route = express.Router();
 var EffectModel = require("../models").Effects
 
 const getByMusicCategory = (req, res) => {
-    res.json({
-        success: true, 
-        effects : [{
-            name: 'beat1',
-            soundPath: '/audio/beat1.wav', 
-            soundCategory: {
-                _id: "",
-                name: "kick"
-            }, 
-            musicCategory: {
-                _id: "",
-                name: 'hiphop'
-            },
-        }]
-    })
+    EffectModel.find({}, (err, effects) => {
+        res.json({
+            success: true,
+            data: effects
+        });
+    }).populate('soundCategory').populate('musicCategory').exec((err, effect) => {
+        if(err) return handleError(err);
+        console.log('The sound category is', effect.soundCategory)
+    });
 };
 
+// Lien for ALL
 const getAll = (req, res) => {
     EffectModel.find({}, (err, effects) => {
         res.json({
             success: true,
             data: effects
         });
+    }).populate('soundCategory').exec((err, effect) => {
+        if (err) return handleError(err);
+        console.log('The sound category is', effect.soundCategory.name)
     });
 };
-
-const getById = (req, res) => {
-    EffectModel.findOne({ _id: req.params.effectId }, (err, effect) => {
-        res.json({
-            success: true,
-            data: effect 
-        });
-    });
-}
 
 const save = (req, res) => {
         // Définition d'un nouvel Effet
         var effect = new EffectModel({
             name: req.body.name || "",
             soundPath: req.body.soundPath || "", 
-            soundCategory: req.body.soundCategory || "",
+            soundCategory: req.body.soundCategory._id || "",
             musicCategory: req.body.musicCategory || ""
         });
         // Enregistrement d'un nouvel Effet
@@ -67,6 +56,19 @@ const save = (req, res) => {
 };
 
 
+// Lien by ID
+const getById = (req, res) => {
+    EffectModel.findOne({ _id: req.params.effectId }, (err, effect) => {
+        res.json({
+            success: true,
+            data: effect 
+        });
+    }).populate('soundCategory').exec(function (err, effect) {
+        if (err) return handleError(err);
+        console.log('The sound category is', effect.soundCategory.name)
+    });
+}
+
 const getUpdate = (req, res) => {
     var name = req.query.name;
 
@@ -88,7 +90,7 @@ const getUpdate = (req, res) => {
         });
     });
 }
-const getDelete = (req, res) => {
+const deleteItem = (req, res) => {
     EffectModel.deleteOne({_id: req.params.effectId}, (err, result) => {
         console.log("delete result", result);
         res.json({
@@ -100,13 +102,14 @@ const getDelete = (req, res) => {
     });
 }
 
+
 // API CRUD - Effects
 route.post('/', save);
 route.get('/', getAll);
 
 route.get('/:effectId/', getById);
 route.put('/:effectId/', getUpdate);
-route.delete('/:effectId/', getDelete);
+route.delete('/:effectId/', deleteItem);
 
 route.get('/musiccategories/hiphop', getByMusicCategory);
 

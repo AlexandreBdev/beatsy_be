@@ -5,6 +5,7 @@ var fs = require("fs");
 var effectsRoute = require('./routes').effects;
 var musiccategoryRoute = require('./routes').musiccategory;
 var soundcategoryRoute = require('./routes').soundcategory;
+var cors = require("cors");
 
 var port = process.env.PORT || 3000;
 
@@ -18,6 +19,7 @@ mongoose.connect("mongodb://localhost:27017/beatsy", {
 
 // Express configuration
 var app = express();
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

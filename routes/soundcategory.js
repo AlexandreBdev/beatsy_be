@@ -2,7 +2,16 @@ var express = require('express');
 var route = express.Router();
 var SoundCategoryModel = require("../models").SoundCategory
 
-const getAll = (req, res) => {};
+// Lien ALL
+const getAll = (req, res) => {
+    SoundCategoryModel.find({}, (err, soundcategories) => {
+        res.json({
+            success: true, 
+            data: soundcategories
+        })
+    });
+};
+
 const save = (req, res) => {
     // Définition d'une nouvelle catégorie sonore
     var soundcategory = new SoundCategoryModel({
@@ -30,6 +39,17 @@ const save = (req, res) => {
     });
 }
 
+// Lien by ID
+const getById = (req, res) => {
+    SoundCategoryModel.findOne({ _id: req.params.soundcategoryId }, (err, soundcategory) => {
+        res.json({
+            success: true,
+            data: soundcategory 
+        });
+    });
+}
+
+
 const getUpdate = (req, res) => {
     var color = req.query.color
 
@@ -51,11 +71,25 @@ const getUpdate = (req, res) => {
         })
     });
 }
-const deleteItem = (req, res) => {}
+
+const deleteItem = (req, res) => {
+    SoundCategoryModel.deleteOne({_id: req.params.soundcategoryId}, (err, result) => {
+        console.log("delete result", result);
+        res.json({
+            success: true, 
+            date: {
+                isDeleted: true
+            }
+        });
+    });
+
+}
 
 route.post('/', save);
 route.get('/', getAll);
-route.put('/:soundcategoryId', getUpdate);
-route.delete('/', deleteItem);
+
+route.get('/:soundcategoryId/', getById);
+route.put('/:soundcategoryId/', getUpdate);
+route.delete('/:soundcategoryId/', deleteItem);
 
 module.exports = route;
