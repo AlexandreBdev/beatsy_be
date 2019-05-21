@@ -45,11 +45,10 @@ const getAll = (req, res) => {
       success: true,
       data: listen
     });
+  }).populate('user').populate('composition').exec((err, listen)=>{
+    if (err) return console.log(err);
+    console.log('The listen is ok');
   });
-  // .populate('user').populate('composition').exec((err, listen)=>{
-  //   if (err) return console.log(err);
-  //   console.log('The listen is ok');
-  // });
 };
 
 
@@ -81,7 +80,7 @@ const getDelete = (req, res) => {
 
 const getCompositionById = (req, res) => {
   console.log('', );
-  ListenModel.find({ composition: req.params.compositionID }, (err, listen)=>{
+  ListenModel.find({ composition: req.params.compositionId }, (err, listen)=>{
     res.json({
       success: true,
       data: listen
