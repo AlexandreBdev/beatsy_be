@@ -10,6 +10,7 @@ module.exports = {
     ref: "MusicCategory"
   },
   exportedPath: String,
+  track: String,
   created: {
     type: Date,
     default: Date.now

@@ -5,9 +5,14 @@ var fs = require("fs");
 var effectsRoute = require('./routes').effects;
 var musiccategoryRoute = require('./routes').musiccategory;
 var soundcategoryRoute = require('./routes').soundcategory;
+var userRoute = require('./routes').user;
+var compositionRoute = require ('./routes').composition;
+var reviewRoute = require ('./routes').review;
+
+
 var cors = require("cors");
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3001;
 
 
 
@@ -26,10 +31,23 @@ app.use(bodyParser.json());
 
 app.use(express.static('public'));
 
+//Définition des CORS
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
+
+//Définition du router
 app.use('/api/effects', effectsRoute);
 app.use('/api/musiccategory', musiccategoryRoute);
 app.use('/api/soundcategory', soundcategoryRoute);
-
+app.use('/api/user', userRoute);
+app.use('/api/composition', compositionRoute);
+app.use('/api/review', reviewRoute);
 
 
 app.listen(port, () => {
