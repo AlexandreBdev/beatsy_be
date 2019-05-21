@@ -8,6 +8,8 @@ var soundcategoryRoute = require('./routes').soundcategory;
 var userRoute = require('./routes').user;
 var compositionRoute = require ('./routes').composition;
 var reviewRoute = require ('./routes').review;
+var likeRoute = require('./routes').like;
+var listenRoute = require('./routes').listen;
 
 
 var cors = require("cors");
@@ -48,6 +50,9 @@ app.use('/api/soundcategory', soundcategoryRoute);
 app.use('/api/user', userRoute);
 app.use('/api/composition', compositionRoute);
 app.use('/api/review', reviewRoute);
+app.use('/api/like', likeRoute);
+app.use('/api/listen', listenRoute);
+
 
 
 app.listen(port, () => {

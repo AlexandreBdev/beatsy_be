@@ -8,10 +8,9 @@ module.exports = {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Composition"
   },
-  isListen: {
-    type: Boolean,
-    default: false
-  }, 
+  
+  listened: Number, 
+
   created: {
     type: Date,
     default: Date.now

@@ -4,5 +4,7 @@ module.exports = {
     soundcategory: require('./soundcategory'),
     user: require('./user'),
     composition: require('./composition'),
-    review: require('./review')
+    review: require('./review'),
+    listen: require('./listen'),
+    like: require('./like'),
   };
