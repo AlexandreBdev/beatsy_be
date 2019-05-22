@@ -11,7 +11,7 @@ const getAll = (req, res) => {
       success: true,
       data: reviews
     });
-  }).populate('composition').populate('user').exec((err, review) => {
+  }).populate('user_composition').populate('user').exec((err, review) => {
     if (err) return console.log(err);
     console.log('The review')
   });
@@ -24,7 +24,7 @@ const save = (req, res) => {
   // Définition d'une nouvelle review
   console.log('req.body',req.body);
   console.log('req.query.user',req.query.user);
-  console.log('req.query.composition', req.query.composition)
+  console.log('req.query.user_composition', req.query.user_composition)
   console.log('req.body.comment', req.body.comment);
   var created = new Date();
   console.log('New Date () created', created);
@@ -33,7 +33,7 @@ const save = (req, res) => {
 
   var review = new ReviewModel({
     user: req.query.user || "",
-    composition: req.query.composition || "",
+    user_composition: req.query.user_composition || "",
     comment: req.body.comment || "",
     created: created || "",
   });

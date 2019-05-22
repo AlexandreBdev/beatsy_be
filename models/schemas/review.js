@@ -4,9 +4,9 @@ module.exports = {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   },
-  composition: {
+  user_composition: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Composition"
+    ref: "User_composition"
   },
   comment: String,
   created: {

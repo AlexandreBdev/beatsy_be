@@ -10,7 +10,7 @@ const getAll = (req, res) => {
       success: true,
       data: compositions
     });
-  }).populate('musicCategory').populate('user').exec((err, composition) => {
+  }).populate('user_composition').exec((err, composition) => {
     if (err) return console.log(err);
     console.log('The composition is ok')
   });
@@ -20,21 +20,25 @@ const getAll = (req, res) => {
 
 const save = (req, res) => {
   // Définition d'une nouvelle composition
-  var track = req.query.track;
-  console.log('track', track);
-  var musicCategory = req.query.musicCategory;
-  console.log('musicCategory', musicCategory);
-  var name = req.query.name;
-  console.log('name', name); 
-  var user = req.query.user;
-  console.log('user', user);
+  // var track = req.query.track;
+  // console.log('track', track);
+  // var musicCategory = req.query.musicCategory;
+  // console.log('musicCategory', musicCategory);
+  // var name = req.query.name;
+  // console.log('name', name); 
+  // var user = req.query.user;
+  // console.log('user', user);
+  var user_composition = req.query.user_composition;
+  console.log('user', user_composition);
+
 
   var composition = new CompositionModel({
-    name: req.query.name || "",
-    user: req.query.user || "",
-    musicCategory: req.query.musicCategory || "",
-    exportedPath: req.query.exportedPath || "",
-    track: req.query.track || "",
+    user_composition: user_composition,
+    // name: req.query.name || "",
+    // user: req.query.user || "",
+    // musicCategory: req.query.musicCategory || "",
+    // exportedPath: req.query.exportedPath || "",
+    // track: req.query.track || "",
     created: req.query.created || "",
   });
   // Enregistrement d'une nouvelle composition

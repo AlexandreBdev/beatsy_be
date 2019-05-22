@@ -268,6 +268,8 @@ const getSignup = (req, res) => {
   });
 };
 
+  // Composition by UserId
+
 const getCompositionByUser = (req, res) => {
   var user = req.params.userId;
   console.log('user', user);
@@ -355,11 +357,12 @@ const getAllCompositions = (req, res) => {
 
   route.get('/login', getLogin);
   route.get('/signup', getSignup);
-
+  
+  // Composition by UserId
   route.get('/:userId/composition/', getCompositionByUser);
   route.post('/:userId/composition/', saveCompositionByUser);
 
-  route.get('/user_compositions', getAllCompositions);
+  // route.get('/user_compositions', getAllCompositions);
 
 
 
