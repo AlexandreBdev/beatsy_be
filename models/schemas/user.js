@@ -25,6 +25,10 @@ module.exports = {
       required: true
     },
     username: String,
+    composition: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Composition"
+    }
     // thumbnail: String,
   };
   

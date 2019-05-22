@@ -1,6 +1,7 @@
 var express = require('express');
 var route = express.Router();
-var UserModel = require("../models").User
+var UserModel = require("../models").User;
+var User_compositionModel = require("../models").User_composition;
 var passwordHash = require("password-hash");
 
 const getUser = (req, res) => {
@@ -123,12 +124,14 @@ const getUpdate = (req, res) => {
           "text": "Requête invalide"
       })
   } else {
+    var compositionDefaultId = "5ce1a20a5a0ef123a05799c6"
       var user = {
         // firstName: req.body.firstName || "",
         // surname: req.body.surname || "",
         username: req.body.username || "",
         // thumbnail: req.body.thumbnail || "",
         // created: req.body.created || "",
+        // composition: compositionDefaultId || "",
         email: req.body.email,
         password: passwordHash.generate(req.body.password)
 
@@ -204,7 +207,11 @@ const getUpdate = (req, res) => {
   }
 
   const login = (req, res) => {
+    console.log("login req")
+    console.log("req.body.email", req.body.email);
+    console.log("req.body.password", req.body.password);
     if (!req.body.email || !req.body.password) {
+      console.log("400: Requête invalide");
       //Le cas où l'email ou bien le password ne serait pas soumit ou nul
       res.status(400).json({
           "text": "Requête invalide"
@@ -214,21 +221,25 @@ const getUpdate = (req, res) => {
           email: req.body.email
       }, function (err, user) {
           if (err) {
+            console.log("500: Erreur interne");
               res.status(500).json({
                   "text": "Erreur interne"
               })
           } else if (!user) {
+            console.log("401: L'utilisateur n'existe pas");
               res.status(401).json({
                   "text": "L'utilisateur n'existe pas"
               })
           } else {
               if (user.authenticate(req.body.password)) {
+                console.log("200: Authentification réussi");
                   res.status(200).json({
                       "token": user.getToken(),
                       "text": "Authentification réussi",
                       user: user._id
                   })
               } else {
+                console.log("401: Mot de passe incorrect");
                   res.status(401).json({
                       "text": "Mot de passe incorrect"
                   })
@@ -257,6 +268,76 @@ const getSignup = (req, res) => {
   });
 };
 
+const getCompositionByUser = (req, res) => {
+  var user = req.params.userId;
+  console.log('user', user);
+
+  User_compositionModel.find({user: req.params.userId}, (err, user_composition) => {
+    res.json({
+      success: true,
+      data: user_composition
+    });
+  }).populate('musicCategory').populate('user').exec((err, user_composition) => {
+    if (err) return console.log(err);
+    console.log('The composition by User is ok')
+  });
+}
+
+const saveCompositionByUser = (req, res) => {
+  // Définition d'une nouvelle composition par User
+  var track = req.query.track;
+  console.log('track', track);
+  var musicCategory = req.query.musicCategory;
+  console.log('musicCategory', musicCategory);
+  var name = req.query.name;
+  console.log('name', name); 
+  var user = req.params.userId;
+  console.log('user', user);
+
+  var user_composition = new User_compositionModel({
+    name: req.query.name || "",
+    user: user || "",
+    musicCategory: req.query.musicCategory || "",
+    exportedPath: req.query.exportedPath || "",
+    track: req.query.track || "",
+    created: req.query.created || "",
+  });
+
+// Enregistrement d'un nouvel User
+user_composition.save(function(err, user_composition) {
+  // Gestion des erreurs
+  if (err != null) {
+    res.json({
+      success: false,
+      error: {
+        message : err.toString()
+      }
+    });
+    return;
+  }
+  // Résultat si la condition est vraie
+  res.json({
+    success: true,
+    data: user_composition
+  });
+});
+};
+
+
+const getAllCompositions = (req, res) => {
+  console.log('All Compositions are required');
+
+  User_compositionModel.find({}, (err, user_compositions) => {
+    res.json({
+      success: true,
+      data: user_compositions
+    });
+  }).populate('musicCategory').populate('user').exec((err, user_compositions) => {
+    if (err) return console.log(err);
+    console.log('The compositions are ok')
+  });
+}
+
 
 
   // API CRUD - USERS
@@ -274,5 +355,12 @@ const getSignup = (req, res) => {
 
   route.get('/login', getLogin);
   route.get('/signup', getSignup);
+
+  route.get('/:userId/composition/', getCompositionByUser);
+  route.post('/:userId/composition/', saveCompositionByUser);
+
+  route.get('/user_compositions', getAllCompositions);
+
+
 
   module.exports = route;

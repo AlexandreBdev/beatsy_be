@@ -9,10 +9,12 @@ var SoundCategory = require("./soundcategory");
 var MusicCategory = require("./musiccategory");
 var MusicCategory_Effects = require("./musiccategory_effects");
 var Like = require("./like");
+var User_composition = require("./user_composition");
 
 module.exports = {
   Review: Review,
   User: User,
+  User_composition: User_composition,
   Listen: Listen,
   Share: Share,
   Composition: Composition,
@@ -21,5 +23,5 @@ module.exports = {
   SoundCategory: SoundCategory,
   MusicCategory: MusicCategory,
   MusicCategory_Effects : MusicCategory_Effects,
-  Like : Like,
+  Like: Like,
 };

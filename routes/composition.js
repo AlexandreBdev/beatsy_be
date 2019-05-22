@@ -134,6 +134,10 @@ const getByUserId = (req, res) => {
   route.delete('/:compositionId/', getDelete);
 
   route.get('/user/:userId/', getByUserId);
+  
+  //   // Like for each composition
+  // route.post('/:compositionId/like', getLike)
+  
 
 
 

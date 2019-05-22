@@ -5,6 +5,9 @@ var LikeModel = require("../models").Like
 
 const save = (req, res) => {
   // Definition d'un nouveau like
+  console.log("req.body.user", req.body.user);
+  console.log("req.body.composition", req.body.composition);
+  console.log("req.body.isLike", req.body.isLike);
   var like = new LikeModel({
     user: req.body.user || "",
     composition: req.body.composition || "",
@@ -14,6 +17,7 @@ const save = (req, res) => {
 
   like.save(function(err, like){
     // Gestion des erreurs
+    console.log("error", err)
     if (err != null) {
       res.json({
         success : false,
@@ -24,6 +28,7 @@ const save = (req, res) => {
       return;
     }
     // Résultat si la condition est vraie
+    console.log("succès")
     res.json({
       success: true,
       data: like
@@ -32,6 +37,7 @@ const save = (req, res) => {
 };
 
 const getAll = (req, res) => {
+  console.log('getAll Like')
   LikeModel.find({}, (err, like) => {
     res.json({
       success: true,
