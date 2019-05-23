@@ -10,7 +10,7 @@ const getAll = (req, res) => {
       success: true,
       data: compositions
     });
-  }).populate('user_composition').exec((err, composition) => {
+  }).populate({path:'user_composition', populate: [{path: 'user'}, {path: 'musicCategory'}]}).exec((err, composition) => {
     if (err) return console.log(err);
     console.log('The composition is ok')
   });
@@ -19,6 +19,7 @@ const getAll = (req, res) => {
 
 
 const save = (req, res) => {
+  
   // Définition d'une nouvelle composition
   // var track = req.query.track;
   // console.log('track', track);
@@ -30,6 +31,9 @@ const save = (req, res) => {
   // console.log('user', user);
   var user_composition = req.query.user_composition;
   console.log('user', user_composition);
+  var created = new Date();
+  console.log('New Date () created', created);
+
 
 
   var composition = new CompositionModel({
@@ -39,7 +43,7 @@ const save = (req, res) => {
     // musicCategory: req.query.musicCategory || "",
     // exportedPath: req.query.exportedPath || "",
     // track: req.query.track || "",
-    created: req.query.created || "",
+    created: created,
   });
   // Enregistrement d'une nouvelle composition
   composition.save(function(err, composition){
@@ -68,9 +72,9 @@ const save = (req, res) => {
         success: true,
         data: composition
       });
-    }).populate('musicCategory').populate('user').exec((err, composition) => {
+    }).populate({path:'user_composition', populate: [{path: 'user'}, {path: 'musicCategory'}]}).exec((err, composition) => {
       if (err) return console.log(err);
-      console.log('The composition is ok')
+      console.log('The composition by Id is ok')
   });
 }
 

@@ -11,6 +11,10 @@ module.exports = {
   // },
   // exportedPath: String,
   // track: String,
+  listen: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Listen"
+  },
   created: {
     type: Date,
     default: Date.now

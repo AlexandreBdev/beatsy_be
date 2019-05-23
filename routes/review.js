@@ -32,7 +32,8 @@ const save = (req, res) => {
   
 
   var review = new ReviewModel({
-    user: req.query.user || "",
+    // user: req.query.user || "",
+    username: req.query.username || "", 
     user_composition: req.query.user_composition || "",
     comment: req.body.comment || "",
     created: created || "",
@@ -112,6 +113,17 @@ const save = (req, res) => {
     });
   }
 
+  const getReviewsByUser_compositionId = (req, res) => {
+    console.log('getReviewsByUser_compositionId #review')
+    console.log('user_compositionId', req.params.user_compositionId)
+    ReviewModel.find({user_composition: req.params.user_compositionId}, (err, result) => {
+      console.log("review by composititon", result);
+      res.json ({
+        success: true,
+        data: result
+      });
+    });
+  }
 
 
 
@@ -122,6 +134,8 @@ const save = (req, res) => {
   route.get('/:reviewId/', getById);
   route.put('/:reviewId/', getUpdate);
   route.delete('/:reviewId/', getDelete);
+
+  route.get('/user_composition/:user_compositionId', getReviewsByUser_compositionId);
 
 
   module.exports = route;

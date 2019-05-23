@@ -8,11 +8,14 @@ const save = (req, res) => {
   console.log("req.body.user", req.body.user);
   console.log("req.body.composition", req.body.composition);
   console.log("req.body.isLike", req.body.isLike);
+  var created = new Date();
+  console.log('New Date () created', created);
+
   var like = new LikeModel({
     user: req.body.user || "",
     composition: req.body.composition || "",
     isLike: req.body.isLike || "",
-    created: req.body.created || "",
+    created: created,
   });
 
   like.save(function(err, like){

@@ -1,6 +1,8 @@
 var express = require('express');
 var route = express.Router();
-var ListenModel = require("../models").Listen
+var ListenModel = require("../models").Listen;
+var CompositionModel = require("../models").Composition;
+
 
 
 const save = (req, res) => {
@@ -8,15 +10,15 @@ const save = (req, res) => {
   console.log('req.query.composition ', req.query.composition);
   console.log('req.query.listened',req.query.listened);
 
-  const date = new Date()
-  console.log('date', date);
+  var created = new Date();
+  console.log('New Date () created', created);
 
 
   var listen = new ListenModel({
     user: req.query.user || "",
     composition: req.query.composition || "",
     listened: req.query.listened || "",
-    created: date,
+    created: created,
   });
 
   listen.save(function(err, listen) {
@@ -30,13 +32,35 @@ const save = (req, res) => {
       });
       return;
     }
+
+  // ----------------- SAVE in COMPOSITION COLLECTION ---------------------//
+    
+  var composition = new CompositionModel({
+      listen: listen._id,
+      created: created
+    });
+    // Enregistrement d'une nouvelle composition
+    composition.save(function(err, composition){
+      // Gestion des erreurs
+      if(err != null) {
+        res.json({
+          success: false,
+          error: {
+            message: err.toString()
+          }
+        });
+        return;
+      }
+  
+    
     // Résultat si la condition est vraie
     res.json({
       success: true,
       data : listen
+      });
     });
   });
-};
+}
 
 
 const getAll = (req, res) => {
@@ -79,14 +103,18 @@ const getDelete = (req, res) => {
 // composition
 
 const getCompositionById = (req, res) => {
-  console.log('', );
+  console.log('getCompositionById #listen');
   ListenModel.find({ composition: req.params.compositionId }, (err, listen)=>{
     res.json({
       success: true,
       data: listen
     })
-  });
+  }).populate('user').populate('composition').exec((err, listen)=>{
+    if (err) return console.log(err);
+    console.log('The listen is ok');
+  });  
 }
+
 
 
   // API CRUD - USERS

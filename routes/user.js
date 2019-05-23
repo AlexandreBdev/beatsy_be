@@ -2,6 +2,7 @@ var express = require('express');
 var route = express.Router();
 var UserModel = require("../models").User;
 var User_compositionModel = require("../models").User_composition;
+var CompositionModel = require("../models").Composition;
 var passwordHash = require("password-hash");
 
 const getUser = (req, res) => {
@@ -35,6 +36,10 @@ const getUser = (req, res) => {
 
 const save = (req, res) => {
     // Definition d'un nouvel user
+
+    var created = new Date();
+    console.log('New Date () created', created);
+  
   var user = new UserModel({
     firstName: req.body.firstName || "",
     surname: req.body.surname || "",
@@ -43,7 +48,7 @@ const save = (req, res) => {
     username: req.body.username || "",
     token: req.body.token || "",
     thumbnail: req.body.thumbnail || "",
-    created: req.body.created || "",
+    created: created || "",
   });
 
   // Enregistrement d'un nouvel User
@@ -180,7 +185,8 @@ const getUpdate = (req, res) => {
                   res.status(200).json({
                       "text": "Succès",
                       token: user.getToken(),
-                      user: user._id
+                      user: user._id,
+                      username: user.username
                   })
               }
           })
@@ -236,7 +242,8 @@ const getUpdate = (req, res) => {
                   res.status(200).json({
                       "token": user.getToken(),
                       "text": "Authentification réussi",
-                      user: user._id
+                      user: user._id,
+                      username: user.username
                   })
               } else {
                 console.log("401: Mot de passe incorrect");
@@ -295,6 +302,9 @@ const saveCompositionByUser = (req, res) => {
   console.log('name', name); 
   var user = req.params.userId;
   console.log('user', user);
+  var created = new Date();
+  console.log('New Date () created', created);
+
 
   var user_composition = new User_compositionModel({
     name: req.query.name || "",
@@ -302,7 +312,7 @@ const saveCompositionByUser = (req, res) => {
     musicCategory: req.query.musicCategory || "",
     exportedPath: req.query.exportedPath || "",
     track: req.query.track || "",
-    created: req.query.created || "",
+    created: created,
   });
 
 // Enregistrement d'un nouvel User
@@ -311,34 +321,65 @@ user_composition.save(function(err, user_composition) {
   if (err != null) {
     res.json({
       success: false,
-      error: {
+      error: {    
         message : err.toString()
       }
     });
     return;
   }
-  // Résultat si la condition est vraie
-  res.json({
-    success: true,
-    data: user_composition
+  // ----------------- SAVE in COMPOSITION COLLECTION ---------------------//
+
+
+  var composition = new CompositionModel({
+    user_composition: user_composition._id,
+    created: created,
   });
+  // Enregistrement d'une nouvelle composition
+  composition.save(function(err, compositionDb){
+    // Gestion des erreurs
+    // if(err != null) {
+    //   res.json({
+    //     success: false,
+    //     error: {
+    //       message: err.toString()
+    //     }
+    //   });
+    //   return;
+    // }
+      // Résultat si la condition est vraie
+    res.json({
+      success: true,
+      data: user_composition
+    });
+  });
+
+
+  // ----------------- / SAVE in COMPOSITION COLLECTION ---------------------//
+
+  // Résultat si la condition est vraie
+  // console.log('user_composition _id', user_composition._id);
+  // res.json({
+  //   success: true,
+  //   data: user_composition
+  // });
 });
+
 };
 
 
-const getAllCompositions = (req, res) => {
-  console.log('All Compositions are required');
+// const getAllCompositions = (req, res) => {
+//   console.log('All Compositions are required');
 
-  User_compositionModel.find({}, (err, user_compositions) => {
-    res.json({
-      success: true,
-      data: user_compositions
-    });
-  }).populate('musicCategory').populate('user').exec((err, user_compositions) => {
-    if (err) return console.log(err);
-    console.log('The compositions are ok')
-  });
-}
+//   User_compositionModel.find({}, (err, user_compositions) => {
+//     res.json({
+//       success: true,
+//       data: user_compositions
+//     });
+//   }).populate('musicCategory').populate('user').exec((err, user_compositions) => {
+//     if (err) return console.log(err);
+//     console.log('The compositions are ok')
+//   });
+// }
 
 
 

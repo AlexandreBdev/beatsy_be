@@ -13,6 +13,10 @@ module.exports = {
       type: mongoose.Schema.Types.ObjectId,
       ref: "MusicCategory"
     },
+    listen: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Listen"
+    },
     exportedPath: String,
     track: String,
     created: {
