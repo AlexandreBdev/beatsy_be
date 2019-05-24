@@ -32,34 +32,11 @@ const save = (req, res) => {
       });
       return;
     }
-
-  // ----------------- SAVE in COMPOSITION COLLECTION ---------------------//
-    
-  var composition = new CompositionModel({
-      listen: listen._id,
-      created: created
-    });
-    // Enregistrement d'une nouvelle composition
-    composition.save(function(err, composition){
-      // Gestion des erreurs
-      if(err != null) {
-        res.json({
-          success: false,
-          error: {
-            message: err.toString()
-          }
-        });
-        return;
-      }
-  
-    
-    // Résultat si la condition est vraie
     res.json({
       success: true,
-      data : listen
-      });
+      data: listen
     });
-  });
+  })
 }
 
 

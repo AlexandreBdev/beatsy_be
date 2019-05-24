@@ -302,6 +302,7 @@ const saveCompositionByUser = (req, res) => {
   console.log('name', name); 
   var user = req.params.userId;
   console.log('user', user);
+  console.log('req.query.listen', req.query.listen);
   var created = new Date();
   console.log('New Date () created', created);
 
@@ -312,6 +313,7 @@ const saveCompositionByUser = (req, res) => {
     musicCategory: req.query.musicCategory || "",
     exportedPath: req.query.exportedPath || "",
     track: req.query.track || "",
+    listen: req.query.listen,
     created: created,
   });
 
@@ -383,6 +385,58 @@ user_composition.save(function(err, user_composition) {
 
 
 
+
+const getCompositionByUser_compositionId = (req, res) => {
+  User_compositionModel.findOne({_id: req.params.user_compositionId}, {listen:1}, (err, user_composition) => {
+    // console.log('data: user_composition', user_composition);
+    // console.log('data: user_composition', user_composition.listen)
+    
+    res.json ({
+      success: true,
+      data: user_composition
+    });
+  }).populate;
+}
+
+
+const getUpdateCompositionByUser = (req, res) => {
+  console.log('getUpdateCompositionByUser #user_composition for listen')
+  console.log('req.params.user_compositionId',req.params.user_compositionId)
+  if(typeof listen === "string"){
+    res.json ({
+      success: false,
+      error : {
+        message: "plus "+listen+" écoute"
+      }
+    });
+    return;
+  }
+
+  User_compositionModel.findOne({_id: req.params.user_compositionId}, {listen:1}, (err, user_composition) => {
+    console.log('data: user_composition', user_composition);
+    // console.log('data: user_composition', user_composition.listen)
+
+    // if (user_composition.listen === null) {
+    //   listen = 1
+    // }
+    var listen = user_composition.listen;
+    var listenCounterUp = listen + 1;
+    console.log("listenCounterUp", listenCounterUp);
+  
+    
+  
+  User_compositionModel.updateOne({_id: req.params.user_compositionId}, {listen : listenCounterUp}, (err, result) => {
+    res.json({
+      data: {
+        isUpdate : true
+      }
+      });
+    });
+  });
+};
+
+
+
   // API CRUD - USERS
   // route.post('/', save);
   route.get('/', getAll);
@@ -402,6 +456,8 @@ user_composition.save(function(err, user_composition) {
   // Composition by UserId
   route.get('/:userId/composition/', getCompositionByUser);
   route.post('/:userId/composition/', saveCompositionByUser);
+  route.get('/:userId/composition/:user_compositionId', getCompositionByUser_compositionId);
+  route.put('/:userId/composition/:user_compositionId', getUpdateCompositionByUser);
 
   // route.get('/user_compositions', getAllCompositions);
 
