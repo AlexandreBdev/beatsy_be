@@ -258,7 +258,9 @@ const getUpdate = (req, res) => {
 
 
 const getLogin = (req, res) => {
+  console.log("getLogin Request")
   UserModel.find({password: passwordHash.generate(req.body.password)}, (err, users) => {
+    console.log("users Login", users);
     res.json({
       success: true,
       data: users
@@ -267,7 +269,9 @@ const getLogin = (req, res) => {
 };
 
 const getSignup = (req, res) => {
+  console.log("getSignup Request")
   UserModel.find({password: passwordHash.generate(req.body.password)}, (err, users) => {
+    console.log("users Signup", users);
     res.json({
       success: true,
       data: users
